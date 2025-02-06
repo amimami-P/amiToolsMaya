@@ -3,9 +3,20 @@
 # ------------------------------------------------------
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------
+"""ConstrainOperator.py
+
+git:https://github.com/amimami-P/amiToolsMaya.git
+
+coding by amimami
+MayaVer Maya2024
+
+Ver　1.0
+
+"""
+# ------------------------------------------------------
 import maya.cmds as cmds
 import os
-
+# ------------------------------------------------------
 def create_locator_Center(attrLock,spaceNode=True):
     """選択したオブジェクトの中心にスケール指定のロケーターを作成"""
     select_list = cmds.ls(selection=True,)
@@ -19,7 +30,6 @@ def create_locator_Center(attrLock,spaceNode=True):
     if not select_list:
         cmds.warning("オブジェクトを選択してください！")
         return
-    # 各オブジェクトのワールド空間での位置を取得
     total_position = [0.0, 0.0, 0.0]
     for obj in select_list:
         position = cmds.xform(obj, query=True, worldSpace=True, translation=True)
@@ -36,7 +46,7 @@ def create_locator_Center(attrLock,spaceNode=True):
     cmds.setAttr(locator + ".scale",lock=True)
     cmds.setAttr(locator + ".v",lock=True)
     cmds.xform(locator, worldSpace=True, translation=center_position)
-    # ロケーターのシェイプノードを取得して localScale を設定
+    # localScale を設定
     locator_shape = cmds.listRelatives(locator, shapes=True)[0]
     cmds.setAttr(locator_shape + ".localScaleX", scale)
     cmds.setAttr(locator_shape + ".localScaleY", scale)
@@ -188,8 +198,8 @@ def ResetUiValue():
     cmds.setFocus("")
 
 def constrain_Act(ConstrainNamne):
-    
-    
+
+
     if cmds.checkBox("bake_flug",q=True ,value=True,)==True:
         start_frame = cmds.playbackOptions(query=True, minTime=True)
         end_frame = cmds.playbackOptions(query=True, maxTime=True)
@@ -226,7 +236,7 @@ def transfer_animation():
     elif Option == 2:
         mode="smartBake"
     elif Option == 3:
-        mode="fullBake"         
+        mode="fullBake"
     print (Option)
     source_node = cmds.textField("SlectNodeField", query=True,text=True)
     target_node_list = cmds.ls(sl=True)
@@ -508,7 +518,7 @@ def Const_Info_Ui():
     pointConstraint_list = []
     all_constrain_flug = cmds.checkBox("all_constrain_flug", q=True,value=True,)
 
-    
+
     if connected_nodes:
         for node in connected_nodes:
             if cmds.nodeType(node) == "parentConstraint":
@@ -623,17 +633,14 @@ def Const_Info_Ui():
 def ConstrainOperator():
     """MeinUI
     """
-    # ウィンドウが既に存在する場合は削除
     if cmds.window("ConstrainOperator", exists=True):
         cmds.deleteUI("ConstrainOperator", window=True)
 
-    # ウィンドウの作成
     window = cmds.window("ConstrainOperator", title="Constrain Operator", sizeable=False,
                             maximizeButton=False, minimizeButton=False,)
 
-    # レイアウトの作成
     cmds.columnLayout("CO_Ui_main", adjustableColumn=True)
-    cmds.rowLayout(numberOfColumns=3, 
+    cmds.rowLayout(numberOfColumns=3,
             columnAttach=[(1, "left", 0),(2, "left", 0), (3, "right", 0)],
             columnWidth=[(1, 160), (2, 100), (3, 160)])
     my_path =os.path.dirname(os.path.abspath(__file__))
@@ -641,9 +648,8 @@ def ConstrainOperator():
     cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30)
     cmds.text(label="Constrain Operator", height=30, font="boldLabelFont")
     cmds.button(label="?", width=30, height=30, command=lambda *_: show_help())
-    cmds.setParent("..")  # rowLayout を閉じる
+    cmds.setParent("..")
 
-    # 選択ノード表示部分
     titleRow = cmds.rowLayout(numberOfColumns=4, columnWidth=[(1, 40)])
     cmds.text(label=" ", font="boldLabelFont")
     cmds.text(label="SelectNode :", font="boldLabelFont")
@@ -676,10 +682,9 @@ def ConstrainOperator():
     separator = cmds.separator(style="in", height=20)
     cmds.setParent('LocatorFrame')
 
-    lotRow = cmds.rowLayout(numberOfColumns=2,columnWidth=[(1,110),(2, 150), ])
+    lotRow = cmds.rowLayout(numberOfColumns=2,columnWidth=[(1,80),(2, 150), ])
 
     cmds.text(label="Locator Option")
-    # ラジオボタングループの作成
     cmds.radioButtonGrp("LocatorPosition_Ui",
                         numberOfRadioButtons=3,
                         labelArray3=["SelectFirst", "Center", "SelectAll"],
@@ -688,9 +693,9 @@ def ConstrainOperator():
     cmds.setParent('LocatorFrame')
     separator = cmds.separator(style="in", height=10)
     cmds.setParent('LocatorFrame')
-    exRow = cmds.rowLayout(numberOfColumns=5,columnWidth=[(1, 30),(2, 80), ])
-    cmds.text(label= "        ")
-    cmds.checkBox("space_create_flug", label="OnSpace |", value=False,)
+    exRow = cmds.rowLayout(numberOfColumns=5,columnWidth=[(1, 80),(2, 80), ])
+
+    cmds.checkBox("space_create_flug", label="OnSpace", value=False,)
     cmds.button(label="CreateLocator", width=100,
                 command=lambda _: CreateLocater(""))
     cmds.button(label="Trans Lock", width=100,
@@ -789,7 +794,6 @@ def ConstrainOperator():
 
     cmds.showWindow(window)
 
-    # 新規シーンかシーンを開いた時にメニューを閉じる
     cmds.scriptJob(
         event=['SceneOpened', 'cmds.deleteUI("{}")'.format(window)], p=window)
     cmds.scriptJob(
@@ -810,5 +814,3 @@ def ConstrainOperator():
     )
 
     cmds.setFocus("")
-ConstrainOperator()
-
