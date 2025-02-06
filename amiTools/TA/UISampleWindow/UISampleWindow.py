@@ -1,19 +1,32 @@
 #----------------------------------------------------------
 # -*- coding: utf-8 -*-
 #----------------------------------------------------------
+"""UISampleWindow.py
 
+git:https://github.com/amimami-P/amiToolsMaya.git
+
+coding by amimami
+MayaVer Maya2024
+
+Ver　1.0
+
+"""
+#----------------------------------------------------------
 import maya.cmds as cmds
 import os
+#----------------------------------------------------------
+
+
 def print_command(command, description=""):
     """ボタンが押されたときに cmds コマンドと説明を出力"""
     print ("**---------------------------------------------------------**")
     print(f"{description}\n\n{command}\n")
 
-def create_ui_sample():
+def UISampleWindow():
     """UIのサンプルを作成して表示"""
     if cmds.window("UI_Sample_Window", exists=True):
         cmds.deleteUI("UI_Sample_Window")
-    
+
     window = cmds.window("UI_Sample_Window", title="UI Elements Viewer", widthHeight=(450, 700),
                             sizeable=False,maximizeButton=False, minimizeButton=False,)
     cmds.scrollLayout(verticalScrollBarThickness=16,h=600)
@@ -32,12 +45,14 @@ if cmds.window("Sample_Window", exists=True):
     cmds.deleteUI("Sample_Window")
 window = cmds.window("Sample_Window", title="Sample_Window", widthHeight=(400, 700))
 "ここにUIコードを入れる"
+
+cmds.setParent("..")#レイアウトから外に出る
 cmds.showWindow(window)
 ''' ))
 
-    
+
     cmds.columnLayout("UI_Sample_main")
-    
+
     def add_ui_with_buttons(ui_func, label, create_cmd, query_cmd, description):
         """UI要素の作成、コマンド表示ボタン、説明を追加"""
         cmds.frameLayout(label=label, collapsable=True, collapse=False, marginWidth=20)
@@ -51,7 +66,7 @@ cmds.showWindow(window)
         cmds.setParent("UI_Sample_main")
 
 
-    # レイアウト系 UI
+
     add_ui_with_buttons(lambda: cmds.columnLayout("myColumn", adjustableColumn=True),
                         "Column Layout",
                         'cmds.columnLayout("myColumn", adjustableColumn=True)',
@@ -74,7 +89,7 @@ cmds.showWindow(window)
                         'cmds.frameLayout("myFrame", label="Frame Layout", collapsable=True)',
                         'cmds.frameLayout("myFrame", query=True, collapsable=True)',
                         "折りたたみ可能なフレームで、UIを整理できます。",)
-    # 各 UI エレメント
+
     add_ui_with_buttons(lambda: cmds.text(label="サンプルテキスト"),
                         "Text Label",
                         'cmds.text("myText", label="サンプルテキスト")',
@@ -136,7 +151,32 @@ cmds.showWindow(window)
 テキストをコマンドで入力したい時
     cmds.textField("myTextField", edit=True, text="入力したいテキスト")''',
                         "テキストを入力するできる")
-
+    add_ui_with_buttons(lambda: cmds.text(label="------------------------------------------------"),
+                        "separator",
+                        'cmds.separator( height=20)',
+                        '''取得できる情報なし''',
+                        "UIに区切り線をいれる")
+    add_ui_with_buttons(lambda: (
+        cmds.optionMenu("optionMenu", label="optionMenu", w=150),
+        cmds.menuItem(label="test", parent="optionMenu"),
+        cmds.menuItem(label="test2", parent="optionMenu")
+    ),
+    "Option Menu",
+    '''cmds.optionMenu("optionMenu", label="optionMenu", w=150)
+    cmds.menuItem(label="test", parent="optionMenu")
+    cmds.menuItem(label="test2", parent="optionMenu")''',
+    'cmds.optionMenu("optionMenu", query=True, value=True)',
+    "ドロップダウンメニューを作成")
+    add_ui_with_buttons(lambda: (cmds.symbolButton(image=image_path +
+    r"\amiTools\Image\amiIcon.png", w=50,h=50)
+    ),
+    "symbolButton",
+    'cmds.symbolButton("mySymbolButton", label="ボタン")',
+    '''cmds.symbolButton("mySymbolButton", query=True, label=True)
+ボタンを押したと時のアクション
+    command=lambda *args:function()''',
+    "画像をボタンに出来る")
     cmds.showWindow(window)
+
 
 
