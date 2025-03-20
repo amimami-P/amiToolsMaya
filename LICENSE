@@ -1,21 +1,34 @@
-MIT License
+Mozilla Public License 2.0 (MPL 2.0) with Additional Terms  
 
-Copyright (c) 2025 amimami
+Copyright (c) 2025 amimai
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software is licensed under the Mozilla Public License 2.0. You may obtain a copy of the license at:  
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+https://www.mozilla.org/en-US/MPL/2.0/  
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## **Additional Terms:**  
+1. When redistributing this software, you must retain the original copyright notice.  
+2. Any modifications to this software must also be released under the MPL 2.0 license.  
+3. The sale of this software, in whole or in part, as a standalone product is **strictly prohibited**.  
+4. Works created using this software may be used for commercial purposes without restriction.  
+
+By using this software, you agree to the terms of the Mozilla Public License 2.0 and the additional terms above.  
+
+
+
+
+]Mozilla Public License 2.0（MPL 2.0）追加条項付き  
+
+Copyright (c) 2025 amimai
+
+本ソフトウェアは Mozilla Public License 2.0 の下でライセンスされています。ライセンスの全文は以下で確認できます。  
+
+https://www.mozilla.org/en-US/MPL/2.0/  
+
+## **追加条項:**  
+1. 本ソフトウェアを再配布する際には、元の著作権表示を保持する必要があります。  
+2. 本ソフトウェアを改変した場合、その改変版も MPL 2.0 のライセンスで公開しなければなりません。  
+3. 本ソフトウェア（またはその一部）を**単体で販売することは禁止**します。  
+4. 本ソフトウェアを利用して作成された制作物は、商用目的での使用が許可されます。  
+
+本ソフトウェアを使用することで、Mozilla Public License 2.0 および上記の追加条項に同意したものとみなします。  
