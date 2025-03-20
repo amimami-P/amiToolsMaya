@@ -16,7 +16,43 @@ Ver　1.0
 # ------------------------------------------------------
 import maya.cmds as cmds
 import os
+import amiToolsLauncher
 # ------------------------------------------------------
+def constrain_blend_offset(target):
+    talansFlag = True
+    rotateFlag = True
+    pb ="CoOp_pb_" + target
+    if cmds.objExists("CoOp_pb_" + target) ==False:
+        cmds.createNode("pairBlend", n=pb)
+    elif cmds.objExists("CoOp_pb_" + target):
+        if cmds.listConnections(pb + ".inTranslateX2", plugs=True):
+            talansFlag = False
+        if  cmds.listConnections(pb + ".inRotateX2", plugs=True):
+            rotateFlag = False
+
+    if talansFlag:
+        for axis in ['X', 'Y', 'Z']:
+            attr = "translate" + axis
+            conn = cmds.listConnections(target + "." + attr, source=True, destination=False, plugs=True)
+            if conn:
+                if"CoOp_" in conn[0]:
+                    cmds.disconnectAttr(conn[0], target + "." + attr)
+                    # Target側のOffset代わり
+                    cmds.setAttr(pb + ".inTranslate" + axis + "1",cmds.getAttr(target + "." + attr))
+                    cmds.connectAttr(conn[0], pb + ".inTranslate" + axis + "2")
+                    cmds.connectAttr(pb + ".outTranslate" + axis, target + "." + attr)
+    if rotateFlag :
+        for axis in ['X', 'Y', 'Z']:
+            attr = "rotate" + axis
+            conn = cmds.listConnections(target + "." + attr, source=True, destination=False, plugs=True)
+            if conn:
+                if"CoOp_" in conn[0]:
+                    cmds.disconnectAttr(conn[0], target + "." + attr)
+                    cmds.connectAttr(conn[0], pb + ".inRotate" + axis + "2")
+                    cmds.connectAttr(pb + ".outRotate" + axis, target + "." + attr)
+        cmds.setAttr(pb + ".weight", 1.0)
+    return pb
+
 def create_locator_Center(attrLock,spaceNode=True):
     """選択したオブジェクトの中心にスケール指定のロケーターを作成"""
     select_list = cmds.ls(selection=True,)
@@ -161,7 +197,7 @@ def Constrain_Run(parent =False,point=False,orient=False):
     except:
         pass
     offset = cmds.checkBox("const_offset_flug", query=True, value=True)
-
+    constCheck = True
     for target in target_node:
         if parent == True:
             # 回転のロック状態を取得
@@ -170,17 +206,38 @@ def Constrain_Run(parent =False,point=False,orient=False):
                 attr = f"{target}.rotate{axis.upper()}"
                 if cmds.getAttr(attr, lock=True):
                     locked_rot_axes.append(axis)
+            if not cmds.listConnections(target, type='constraint'):
             # ロックされている回転軸をスキップ
-            PaCo = cmds.parentConstraint(source_node, target, maintainOffset=offset, skipRotate=locked_rot_axes)[0]
+                PaCo = cmds.parentConstraint(source_node, target, maintainOffset=offset, skipRotate=locked_rot_axes)[0]
 
-            cmds.rename(PaCo,"CoOp_" + PaCo)
+                cmds.rename(PaCo,"CoOp_" + PaCo)
+                constrain_blend_offset(target)
+            else:
+                constCheck = False
         elif point == True:
-            PoCo =  cmds.pointConstraint(source_node,target,mo=offset)[0]
-            cmds.rename(PoCo,"CoOp_" + PoCo)
+            if not cmds.listConnections(target, type='pointConstraint'):
+                PoCo =  cmds.pointConstraint(source_node,target,mo=offset)[0]
+                cmds.rename(PoCo,"CoOp_" + PoCo)
+                constrain_blend_offset(target)
+            else:
+                constCheck = False
         elif orient == True:
-            oriCo = cmds.orientConstraint(source_node,target,mo=offset)[0]
-            cmds.rename(oriCo,"CoOp_" + oriCo)
+            if not cmds.listConnections(target, type='orientConstraint'):
+                oriCo = cmds.orientConstraint(source_node,target,mo=offset)[0]
+                cmds.rename(oriCo,"CoOp_" + oriCo)
+                constrain_blend_offset(target)
+            else:
+                constCheck = False
+    if constCheck ==False:
+        cmds.inViewMessage(
+            smg=(u"このツールはコンストレインの重ね掛けには対応していません"),
+            pos="topCenter",
+            bkc=0x00000000,
+            fadeStayTime=3000,
+            fade=True,
+            )
     Const_Info_Ui()
+    cmds.select(target_node)
     cmds.setFocus("")
 
 def ResetUiValue():
@@ -324,6 +381,7 @@ def transfer_animation():
 
 def select_const_list(parent =False,point=False,orient=False):
     source_node = cmds.textField("SlectNodeField", query=True,text=True)
+    source_node = cmds.textField("SlectNodeField", query=True,text=True)
 
     connected_nodes = cmds.listConnections(source_node + ".parentMatrix" )
     parentConstraint_list = []
@@ -335,41 +393,24 @@ def select_const_list(parent =False,point=False,orient=False):
     if connected_nodes:
         for node in connected_nodes:
             if cmds.nodeType(node) == "parentConstraint":
-                parentConstraint_list.append(node.rsplit("_", 1)[0])
+                parentConstraint_list.append(node)
             elif cmds.nodeType(node) == "pointConstraint":
-                pointConstraint_list.append(node.rsplit("_", 1)[0])
+                pointConstraint_list.append(node)
             elif cmds.nodeType(node) == "orientConstraint":
-                orientConstraint_list.append(node.rsplit("_", 1)[0])
+                orientConstraint_list.append(node)
     if all_constrain_flug == True:
-        for i in parentConstraint_list:
-            if not i.startswith("CoOp_"):
-                parentConstraint_list.remove(i.rsplit("_", 1)[0].split("CoOp_")[-1])
-        for i in pointConstraint_list:
-            if not i.startswith("CoOp_"):
-                pointConstraint_list.remove(i.rsplit("_", 1)[0].split("CoOp_")[-1])
-        for i in orientConstraint_list:
-            if not i.startswith("CoOp_"):
-                orientConstraint_list.remove(i.rsplit("_", 1)[0].split("CoOp_")[-1])
+        parentConstraint_list = [paCo for paCo in parentConstraint_list if paCo.startswith("CoOp_")]
+        pointConstraint_list = [opCo for opCo in pointConstraint_list if opCo.startswith("CoOp_")]
+        orientConstraint_list = [orCo for orCo in orientConstraint_list if orCo.startswith("CoOp_")]
 
-    sel_parentConstraint_list =[]
-    sel_orientConstraint_list =[]
-    sel_pointConstraint_list =[]
-    if parentConstraint_list:
-        for i in parentConstraint_list:
-            sel_parentConstraint_list.append(i.split("_parentConstraint")[0].split("CoOp_")[-1])
-    if orientConstraint_list:
-        for i in orientConstraint_list:
-            sel_parentConstraint_list.append(i.split("_orientConstraint")[0].split("CoOp_")[-1])
-    if orientConstraint_list:
-        for i in orientConstraint_list:
-            sel_parentConstraint_list.append(i.split("_orientConstraint")[0].split("CoOp_")[-1])
 
     if parent ==True:
-        cmds.select(sel_parentConstraint_list)
+        cmds.select([Constraint.rsplit("_", 1)[0].split("CoOp_")[-1] for Constraint in parentConstraint_list])
     elif orient ==True:
-        cmds.select(sel_orientConstraint_list)
+        cmds.select([Constraint.rsplit("_", 1)[0].split("CoOp_")[-1] for Constraint in orientConstraint_list])
     elif point ==True:
-        cmds.select(sel_pointConstraint_list)
+        cmds.select([Constraint.rsplit("_", 1)[0].split("CoOp_")[-1] for Constraint in pointConstraint_list])
+
 
 def list_all_run(parent =False,point=False,orient=False):
     source_node = cmds.textField("SlectNodeField", query=True,text=True)
@@ -390,15 +431,10 @@ def list_all_run(parent =False,point=False,orient=False):
             elif cmds.nodeType(node) == "orientConstraint":
                 orientConstraint_list.append(node)
     if all_constrain_flug == True:
-        for i in parentConstraint_list:
-            if not i.startswith("CoOp_"):
-                parentConstraint_list.remove(i)
-        for i in pointConstraint_list:
-            if not i.startswith("CoOp_"):
-                pointConstraint_list.remove(i)
-        for i in orientConstraint_list:
-            if not i.startswith("CoOp_"):
-                orientConstraint_list.remove(i)
+        parentConstraint_list = [paCo for paCo in parentConstraint_list if paCo.startswith("CoOp_")]
+        pointConstraint_list = [opCo for opCo in pointConstraint_list if opCo.startswith("CoOp_")]
+        orientConstraint_list = [orCo for orCo in orientConstraint_list if orCo.startswith("CoOp_")]
+
 
 
     if parent ==True:
@@ -412,14 +448,12 @@ def list_all_run(parent =False,point=False,orient=False):
             constrain_Act(i)
 
 def set_constrain_weight(name,value):
-    print (value)
-    source_node = cmds.textField("SlectNodeField", query=True,text=True)
-    cmds.setAttr(name + "." + source_node + "W0",value)
-    cmds.setKeyframe(name + "." + source_node + "W0")
 
+    cmds.setAttr("CoOp_pb_" + name.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight" ,value)
+    cmds.setKeyframe("CoOp_pb_" + name.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight" )
     cmds.setFocus("")
 
-def show_help():
+def CO_show_help():
     if cmds.window("helpWindow", exists=True):
         cmds.deleteUI("helpWindow")
 
@@ -512,7 +546,10 @@ def Const_Info_Ui():
     if source_node == "None...":
         connected_nodes = []
     else:
-        connected_nodes = cmds.listConnections(source_node + ".parentMatrix" )
+        try:
+            connected_nodes = cmds.listConnections(source_node + ".parentMatrix" )
+        except:
+            return
     parentConstraint_list = []
     orientConstraint_list = []
     pointConstraint_list = []
@@ -558,8 +595,8 @@ def Const_Info_Ui():
 
             # ボタン
             cmds.button(label=label_name, width=135, command=lambda _, name=i: constrain_Act(name))
-            Slider_value = cmds.getAttr(i + "." + source_node + "W0")
-            connections = cmds.listConnections(i + "." + source_node + "W0", source=True, destination=False)
+            Slider_value = cmds.getAttr("CoOp_pb_" + i.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight")
+            connections = cmds.listConnections("CoOp_pb_" + i.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight", source=True, destination=False)
             if bool(connections) ==True: # 接続があれば True、なければ False
                 cmds.floatSliderGrp(field=True, minValue=0, maxValue=1,step=0.01, value=Slider_value,bgc=(0.5,0.35,0.35),
                                     width=120, columnWidth=[(1, 40), (2, 80)], columnAlign=[(1, "left")],
@@ -586,8 +623,8 @@ def Const_Info_Ui():
 
             # ボタン
             cmds.button(label=label_name, width=135, command=lambda _, name=i: constrain_Act(name))
-            Slider_value = cmds.getAttr(i + "." + source_node + "W0")
-            connections = cmds.listConnections(i + "." + source_node + "W0", source=True, destination=False)
+            Slider_value = cmds.getAttr("CoOp_pb_" + i.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight")
+            connections = cmds.listConnections("CoOp_pb_" + i.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight", source=True, destination=False)
             if bool(connections) ==True: # 接続があれば True、なければ False
                 cmds.floatSliderGrp(field=True, minValue=0, maxValue=1,step=0.01, value=Slider_value,bgc=(0.5,0.3,0.3),
                                     width=120, columnWidth=[(1, 40), (2, 80)], columnAlign=[(1, "left")],
@@ -613,8 +650,8 @@ def Const_Info_Ui():
 
             # ボタン
             cmds.button(label=label_name, width=135, command=lambda _, name=i: constrain_Act(name))
-            Slider_value = cmds.getAttr(i + "." + source_node + "W0")
-            connections = cmds.listConnections(i + "." + source_node + "W0", source=True, destination=False)
+            Slider_value = cmds.getAttr("CoOp_pb_" + i.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight")
+            connections = cmds.listConnections("CoOp_pb_" + i.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight", source=True, destination=False)
             if bool(connections) ==True: # 接続があれば True、なければ False
                 cmds.floatSliderGrp(field=True, minValue=0, maxValue=1,step=0.01, value=Slider_value,bgc=(0.5,0.3,0.3),
                                     width=120, columnWidth=[(1, 40), (2, 80)], columnAlign=[(1, "left")],
@@ -645,9 +682,10 @@ def ConstrainOperator():
             columnWidth=[(1, 160), (2, 100), (3, 160)])
     my_path =os.path.dirname(os.path.abspath(__file__))
     image_path = my_path.split("amiTools")[0]
-    cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30)
+    cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
+                        command=lambda *args:amiToolsLauncher.amiToolsLauncher())
     cmds.text(label="Constrain Operator", height=30, font="boldLabelFont")
-    cmds.button(label="?", width=30, height=30, command=lambda *_: show_help())
+    cmds.button(label="?", width=30, height=30, command=lambda *_: CO_show_help())
     cmds.setParent("..")
 
     titleRow = cmds.rowLayout(numberOfColumns=4, columnWidth=[(1, 40)])
@@ -770,6 +808,7 @@ def ConstrainOperator():
     cmds.setParent('..')
     separator = cmds.separator(style="in", height=10)
     cmds.setParent('..')
+    cmds.frameLayout("AnimaCopy",label="Animation Copy", collapsable=True, collapse=True, marginWidth=20)
     animationCopyRow = cmds.rowLayout(adjustableColumn=True,)
     cmds.text(label="Animation Copy", height=30, font="boldLabelFont")
     cmds.setParent('..')
@@ -781,16 +820,15 @@ def ConstrainOperator():
                         labelArray3=["Copy", "SmartBake", "Bake"],
                         select=1,
                         )
-    cmds.setParent('..')
+    cmds.setParent('AnimaCopy')
     cmds.rowLayout(adjustableColumn=True,)
     cmds.button(label="Copy", width=100,h=30,
                 command=lambda _:transfer_animation())
+    cmds.setParent('AnimaCopy')
     cmds.setParent('..')
     separator = cmds.separator(style="in", height=10)
     cmds.setParent('..')
-    cmds.rowLayout(adjustableColumn=True,)
-    cmds.button(label="ReloadUI", width=100,h=30,
-                command=lambda _:ConstrainOperator())
+
 
     cmds.showWindow(window)
 

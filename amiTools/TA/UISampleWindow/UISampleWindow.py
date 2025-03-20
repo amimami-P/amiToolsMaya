@@ -14,6 +14,7 @@ Ver　1.0
 #----------------------------------------------------------
 import maya.cmds as cmds
 import os
+import amiToolsLauncher
 #----------------------------------------------------------
 
 
@@ -34,16 +35,19 @@ def UISampleWindow():
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 120),])
     my_path =os.path.dirname(os.path.abspath(__file__))
     image_path = my_path.split("amiTools")[0]
-    cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30)
-    cmds.text(label="UI Elements Viewer",h=50,font="boldLabelFont")
+    cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
+                        command=lambda *args:amiToolsLauncher.amiToolsLauncher())
+    cmds.text(label="UI Elements Viewer",h=30,font="boldLabelFont")
     cmds.setParent("..")
 
     cmds.columnLayout(adjustableColumn=True)
     cmds.button(label="Pirnt UI Template",h=50,command=lambda *args:print('''
 *--------------------------------------------------------------------------------------*
+import maya.cmds as cmds
 if cmds.window("Sample_Window", exists=True):
     cmds.deleteUI("Sample_Window")
 window = cmds.window("Sample_Window", title="Sample_Window", widthHeight=(400, 700))
+
 "ここにUIコードを入れる"
 
 cmds.setParent("..")#レイアウトから外に出る
@@ -61,8 +65,10 @@ cmds.showWindow(window)
         cmds.text(label=description, align="left", height=40)
         ui_func()
 
-        cmds.button(label="作成コマンドをプリント", command=lambda x: print_command(create_cmd, f"{label} の作成コマンド"))
-        cmds.button(label="情報取得コマンドをプリント", command=lambda x: print_command(query_cmd, f"{label} の情報取得コマンド"))
+        cmds.button(label="作成コマンドをプリント",
+                    command=lambda x: print_command(create_cmd, f"{label} の作成コマンド"))
+        cmds.button(label="情報取得コマンドをプリント",
+                    command=lambda x: print_command(query_cmd, f"{label} の情報取得コマンド"))
         cmds.setParent("UI_Sample_main")
 
 
@@ -96,12 +102,20 @@ cmds.showWindow(window)
                         'cmds.text("myText", query=True, label=True)',
                         "テキストを表示するできる")
 
-    add_ui_with_buttons(lambda: cmds.button(label="ボタン"),
+    add_ui_with_buttons(lambda: cmds.button(label="ボタン",h=30,w=50,
+                        ann="annフラグで簡単な説明メッセージ表示ができます"),
                         "Button",
-                        'cmds.button("myButton", label="ボタン")',
-                        '''cmds.button("myButton", query=True, label=True)
+                        'cmds.button("myButton", label="ボタン")'
+                        '''annフラグで簡単な説明メッセージ表示ができます
+
 ボタンを押したと時のアクション
-    command=lambda *args:function()''',
+    command=lambda *args:function()
+
+右クリックでポップアップメニューを出す
+cmds.popupMenu(parent="myButton")# ボタンを指定してparent
+cmds.menuItem(label="ヘルプを表示", command=lambda _: cmds.confirmDialog(title="ヘルプ",
+        message="このボタンの説明:\nクリックすると処理が実行されます。", button=["OK"]))''',
+                        '''cmds.button("myButton", query=True, label=True)''',
                         "ボタンを押すとコマンドを実行できる")
 
     add_ui_with_buttons(lambda: cmds.radioButtonGrp("myRadioButtonGrp",
@@ -176,6 +190,16 @@ cmds.showWindow(window)
 ボタンを押したと時のアクション
     command=lambda *args:function()''',
     "画像をボタンに出来る")
+    add_ui_with_buttons(lambda: cmds.scrollField("myScrollField",
+                width=200, height=100,text="testText1\ntestText2\ntestText3\n"),
+    "scrollField",
+    '''cmds.scrollField("myScrollField", text="好きなテキストを入力")
+\\nで改行''',
+    '''cmds.scrollField("myScrollField", query=True, text=True)''',
+    "スクロール可能なテキストボックス\n複数データを表示する時とかに使う")
+
+
+
     cmds.showWindow(window)
 
 
