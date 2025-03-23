@@ -106,7 +106,7 @@ cmds.showWindow(window)
                         ann="annフラグで簡単な説明メッセージ表示ができます"),
                         "Button",
                         'cmds.button("myButton", label="ボタン")'
-                        '''annフラグで簡単な説明メッセージ表示ができます
+                        '''\nannフラグで簡単な説明メッセージ表示ができます
 
 ボタンを押したと時のアクション
     command=lambda *args:function()
@@ -198,9 +198,25 @@ cmds.menuItem(label="ヘルプを表示", command=lambda _: cmds.confirmDialog(t
     '''cmds.scrollField("myScrollField", query=True, text=True)''',
     "スクロール可能なテキストボックス\n複数データを表示する時とかに使う")
 
-
+    add_ui_with_buttons(lambda: cmds.button(label="実行",h=30,w=50,command=lambda *args:cmds.inViewMessage(
+                        smg=u"好きなテキストを入れる",
+                        pos="topCenter",
+                        bkc=0x00000000,
+                        fadeStayTime=3000,
+                        fade=True)),
+                        "inViewMessage",
+                        """cmds.inViewMessage(
+                        smg=u"好きなテキストを入れる",
+                        pos="topCenter",
+                        bkc=0x00000000,
+                        fadeStayTime=3000,
+                        fade=True,
+                        )""",
+                        '''取得できる情報なし''',
+                        "3Dビューポートにポップアップテキストを出せる")
 
     cmds.showWindow(window)
 
 
 
+    

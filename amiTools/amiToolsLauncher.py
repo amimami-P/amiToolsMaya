@@ -20,7 +20,8 @@ def amiTL_show_help():
     if cmds.window("helpWindow", exists=True):
         cmds.deleteUI("helpWindow")
 
-    cmds.window("helpWindow", title="amiToolsLauncher Help", widthHeight=(400, 200), sizeable=True)
+    cmds.window("helpWindow", title="amiToolsLauncher Help", widthHeight=(400, 200),
+                sizeable=False, maximizeButton=False, minimizeButton=False)
 
     cmds.columnLayout(adjustableColumn=True)
 
