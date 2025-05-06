@@ -94,7 +94,7 @@ def JointRotatechecker():
     cmds.columnLayout("JointRotatecheckerColumn", adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 72),])
     my_path =os.path.dirname(os.path.abspath(__file__))
-    image_path = my_path.split("amiTools")[0]
+    image_path = my_path.split("amiTools\\")[0]
     cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
                         command=lambda *args:amiToolsLauncher.amiToolsLauncher())
     cmds.text(label="JointRotatechecker",h=30, font="boldLabelFont")

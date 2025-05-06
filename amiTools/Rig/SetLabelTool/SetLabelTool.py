@@ -47,7 +47,7 @@ def SetLabelTool():
     cmds.columnLayout("SetLabelToolMainColumn", adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 102),])
     my_path =os.path.dirname(os.path.abspath(__file__))
-    image_path = my_path.split("amiTools")[0]
+    image_path = my_path.split("amiTools\\")[0]
     cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
                         command=lambda *args:amiToolsLauncher.amiToolsLauncher())
     cmds.text(label="Set Label",h=30, font="boldLabelFont")

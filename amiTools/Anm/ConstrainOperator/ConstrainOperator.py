@@ -681,7 +681,7 @@ def ConstrainOperator():
             columnAttach=[(1, "left", 0),(2, "left", 0), (3, "right", 0)],
             columnWidth=[(1, 160), (2, 100), (3, 160)])
     my_path =os.path.dirname(os.path.abspath(__file__))
-    image_path = my_path.split("amiTools")[0]
+    image_path = my_path.split("amiTools\\")[0]
     cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
                         command=lambda *args:amiToolsLauncher.amiToolsLauncher())
     cmds.text(label="Constrain Operator", height=30, font="boldLabelFont")

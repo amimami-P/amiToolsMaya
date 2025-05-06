@@ -86,14 +86,14 @@ def RelPathConverter():
     cmds.columnLayout("RelPathConverterMainColumn", adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 45),])
     my_path =os.path.dirname(os.path.abspath(__file__))
-    image_path = my_path.split("amiTools")[0]
+    image_path = my_path.split("amiTools\\")[0]
     cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
                         command=lambda *args:amiToolsLauncher.amiToolsLauncher())
     cmds.text(label="RelPathConverter",h=30, font="boldLabelFont")
     cmds.button(label="?", width=30, height=30, command=lambda *_:print("help"))
     cmds.setParent("..")
     cmds.text(label="シーン内の全テクスチャパスを相対パスに変換します。",h=40)
-    cmds.button(label="実行",h=50)
+    cmds.button(label="実行",h=50,command=lambda *args:convert_textures_to_relative())
     cmds.showWindow(window)
     
     
