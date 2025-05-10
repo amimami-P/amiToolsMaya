@@ -1,6 +1,8 @@
 #----------------------------------------------------------
 # -*- coding: utf-8 -*-
 """
+ジョイントのラベル設定をするツールです
+タイプは全てotherで識別子でLRを指定してます
 """
 #----------------------------------------------------------
 import os
@@ -56,12 +58,12 @@ def SetLabelTool():
     cmds.separator( height=10)
     cmds.text(label="左右の識別子を入力")
     cmds.rowLayout(numberOfColumns=3)
-    
+
     cmds.textField("leftNameTF", text="L_",w=150,h=30)
     cmds.text(label=" - ")
     cmds.textField("rightNameTF", text="R_",w=150,h=30)
     cmds.setParent("..")
-    
+
     cmds.separator( height=15)
     cmds.rowLayout(numberOfColumns=3)
     cmds.button(label="Set All Label",h=35,w=160,command=lambda *_:setLabel(AllJoint=True))
@@ -69,9 +71,11 @@ def SetLabelTool():
     cmds.setParent("..")
     cmds.separator( height=10)
     cmds.rowLayout(numberOfColumns=3)
-    
+
     cmds.button(label="Toggle All Label",h=40,w=160,command=lambda *_:ToggleLabel(AllJoint=True))
     cmds.button(label="Toggle Select Label",h=40,w=160,command=lambda *_:ToggleLabel(AllJoint=False))
     cmds.setParent("..")
     cmds.showWindow(window)
     cmds.setFocus("")
+
+
