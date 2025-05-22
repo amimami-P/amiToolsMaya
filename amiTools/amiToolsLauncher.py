@@ -37,6 +37,11 @@ amiTools外のツール登録も可能ですので、必要な場合はReadmeを
 
     cmds.showWindow("helpWindow")
 
+def allTabClose():
+    for ch in cmds.columnLayout("amiToolsLauncherColumn", query=True, childArray=True):
+        if ch.endswith("Frame"):
+            cmds.frameLayout(ch, edit=True, collapse=True)
+
 def amiToolsLauncher():
     """amiToolsLauncherUI
     """
@@ -47,17 +52,20 @@ def amiToolsLauncher():
     if "Image" in folder_list:
         folder_list.remove("Image")
 
-    # 既存のウィンドウを削除
-    if cmds.window("amiToolsLauncher", exists=True):
-        cmds.deleteUI("amiToolsLauncher")
+    if cmds.workspaceControl("amiToolsLauncher", exists=True):
+        cmds.deleteUI("amiToolsLauncher", control=True)
 
-    # ウィンドウ作成
-    window = cmds.window("amiToolsLauncher", title="amiToolsLauncher", widthHeight=(310, 500),
-                        sizeable=False, maximizeButton=False, minimizeButton=False)
+    cmds.workspaceControl(
+        "amiToolsLauncher",
+        label="ami Tools Launcher",
+        floating=True,
+        initialWidth=300,
+        initialHeight=300 
+    )
 
-    cmds.columnLayout("topColumn", adjustableColumn=True)
+    form = cmds.formLayout("amiToolsLauncherMainForm", parent="amiToolsLauncher")
 
-    # ヘッダー部分
+    header = cmds.columnLayout("amiToolsLauncherTopColumn", adjustableColumn=True, parent=form)
     cmds.rowLayout(numberOfColumns=3,
                 columnAttach=[(1, "left", 0), (2, "left", 0), (3, "right", 0)],
                 columnWidth=[(1, 100), (2, 170)])
@@ -68,30 +76,41 @@ def amiToolsLauncher():
     cmds.button(label="?", width=30, height=30, command=lambda *_: amiTL_show_help())
 
     cmds.setParent("..")
-    cmds.separator(height=20)
-
-    # スクロールレイアウト
-    cmds.scrollLayout("toolScroll", h=480)
-    cmds.columnLayout(adjustableColumn=True)
+    cmds.separator(height=10)
+    cmds.button(label="All Tab Close", command=lambda *args:allTabClose(), bgc=(0.15, 0.15, 0.15), parent=header,h=30)
 
     bgc_list = [[0.4, 0.1, 0.1], [0.1, 0.4, 0.1], [0.1, 0.1, 0.4],
                 [0.4, 0.4, 0.1], [0.1, 0.4, 0.4], [0.4, 0.1, 0.4]]
 
-    # フレーム作成
+
+    scroll = cmds.scrollLayout("amiToolsLauncherScroll", childResizable=True, parent=form)
+    scroll_content = cmds.columnLayout("amiToolsLauncherColumn", adjustableColumn=True, parent=scroll)
+
     for index, folder in enumerate(folder_list):
         bgc_nam = index % len(bgc_list)
-
-        frame = cmds.frameLayout(folder + "Frame", label=folder, bgc=bgc_list[bgc_nam],
-                                collapsable=True, collapse=True, width=300)
+        frame = cmds.frameLayout("amiToolsLauncher" + folder + "Frame", label=folder, bgc=bgc_list[bgc_nam],
+                                collapsable=True, collapse=True)
 
         folder_path = os.path.join(my_path, folder)
         for file in os.listdir(folder_path):
             if not file.endswith(".py"):
                 command_test = f"import {folder}.{file}.{file} as {file}\nfrom importlib import reload\nreload({file})\n{file}.{file}()"
-                cmds.button(label=file, command=command_test, parent=frame,w=50,h=30)
+                cmds.button(label=file, command=command_test, parent=frame)
 
         cmds.setParent("..")
         cmds.separator(height=5)
-    cmds.setParent("..")
-    cmds.separator(height=20)
-    cmds.showWindow(window)
+
+
+    cmds.formLayout(form, edit=True,
+        attachForm=[
+            (header, 'top', 0),
+            (header, 'left', 0),
+            (header, 'right', 0),
+            (scroll, 'left', 0),
+            (scroll, 'right', 0),
+            (scroll, 'bottom', 0),
+        ],
+        attachControl=[
+            (scroll, 'top', 0, header)
+        ]
+    )
