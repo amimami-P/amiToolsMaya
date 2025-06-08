@@ -94,9 +94,12 @@ def amiToolsLauncher():
         folder_path = os.path.join(my_path, folder)
         for file in os.listdir(folder_path):
             if not file.endswith(".py"):
-                command_test = f"import {folder}.{file}.{file} as {file}\nfrom importlib import reload\nreload({file})\n{file}.{file}()"
-                cmds.button(label=file, command=command_test, parent=frame)
-
+                Run_command = f"""import {folder}.{file}.{file} as {file}\n
+from importlib import reload\nreload({file})\n{file}.{file}()"""
+                btn = cmds.button(label=file, command=Run_command, parent=frame)
+                cmds.popupMenu(parent=btn)
+                print_command = f"#-------------------\n#{file}\n#-------------------\n" + Run_command
+                cmds.menuItem(label="呼びたしコマンドをプリント", command=lambda _, cc=print_command:print(cc))
         cmds.setParent("..")
         cmds.separator(height=5)
 

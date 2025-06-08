@@ -206,7 +206,7 @@ def Constrain_Run(parent =False,point=False,orient=False):
                 attr = f"{target}.rotate{axis.upper()}"
                 if cmds.getAttr(attr, lock=True):
                     locked_rot_axes.append(axis)
-            if not cmds.listConnections(target, type='constraint'):
+            if not cmds.listConnections(target, type='parentConstraint', source=True, destination=False):
             # ロックされている回転軸をスキップ
                 PaCo = cmds.parentConstraint(source_node, target, maintainOffset=offset, skipRotate=locked_rot_axes)[0]
 
@@ -215,14 +215,15 @@ def Constrain_Run(parent =False,point=False,orient=False):
             else:
                 constCheck = False
         elif point == True:
-            if not cmds.listConnections(target, type='pointConstraint'):
+            if not cmds.listConnections(target, type='pointConstraint', source=True, destination=False):
                 PoCo =  cmds.pointConstraint(source_node,target,mo=offset)[0]
                 cmds.rename(PoCo,"CoOp_" + PoCo)
                 constrain_blend_offset(target)
             else:
+
                 constCheck = False
         elif orient == True:
-            if not cmds.listConnections(target, type='orientConstraint'):
+            if not cmds.listConnections(target, type='orientConstraint', source=True, destination=False):
                 oriCo = cmds.orientConstraint(source_node,target,mo=offset)[0]
                 cmds.rename(oriCo,"CoOp_" + oriCo)
                 constrain_blend_offset(target)
@@ -450,6 +451,7 @@ def list_all_run(parent =False,point=False,orient=False):
 def set_constrain_weight(name,value):
 
     cmds.setAttr("CoOp_pb_" + name.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight" ,value)
+    print("CoOp_pb_" + name.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight" )
     cmds.setKeyframe("CoOp_pb_" + name.rsplit("_", 1)[0].split("CoOp_")[-1] + ".weight" )
     cmds.setFocus("")
 

@@ -7,11 +7,10 @@ def find_deepest_common_folder_name(path1, path2):
     
     # 共通するフォルダ名を取得
     common_folders = set(path1_parts) & set(path2_parts)
-
     # path1の中で一番深い共通フォルダを探す
     deepest_folder = None
 
-    for folder in reversed(path1_parts):  # 深い階層からチェック
+    for folder in reversed(path1_parts): 
         if folder in common_folders:
             deepest_folder = folder
             break  
@@ -35,7 +34,7 @@ def make_relative_path(texture_path, root_dir):
 
 def convert_textures_to_relative():
     """シーン内の全テクスチャのパスを相対パスに変換"""
-    project_root = get_project_root()
+    project_root = get_project_root().replace("\\", "/")
     if not project_root:
         cmds.inViewMessage(
             smg=u"プロジェクトパスが見つかりません。",
@@ -58,14 +57,16 @@ def convert_textures_to_relative():
     if not file_nodes:
         cmds.warning("テクスチャが見つかりません。")
         return
-    
+
     scene_path = cmds.file(q=True, sceneName=True)
     for node in file_nodes:
-        file_path = cmds.getAttr(f"{node}.fileTextureName")
+        file_path = cmds.getAttr(f"{node}.fileTextureName").replace("\\", "/")
         common_folder = find_deepest_common_folder_name(scene_path, file_path)
         relative_path =scene_path.split("/" + common_folder + "/")[0]
         relative_path = relative_path.replace(project_root,"") + "/" + common_folder + "/"
         relative_path += file_path.split("/" + common_folder + "/")[-1]
+        if relative_path.startswith("/"):
+            relative_path = relative_path[1:]
         cmds.setAttr(f"{node}.fileTextureName", relative_path, type="string")
     cmds.inViewMessage(
         smg=u"相対パスへの変換終了",
@@ -74,6 +75,8 @@ def convert_textures_to_relative():
         fadeStayTime=3000,
         fade=True,
         )
+        
+        
 
 def RelPathConverter():
     """UIを作成"""
@@ -82,7 +85,7 @@ def RelPathConverter():
 
     window = cmds.window("RelPathConverter", title="RelPathConverter", widthHeight=(250, 125),
                          sizeable=False,maximizeButton=False, minimizeButton=False,)
-    cmds.columnLayout(adjustableColumn=True)    
+    cmds.columnLayout(adjustableColumn=True)
     cmds.columnLayout("RelPathConverterMainColumn", adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 45),])
     my_path =os.path.dirname(os.path.abspath(__file__))
@@ -95,12 +98,8 @@ def RelPathConverter():
     cmds.text(label="シーン内の全テクスチャパスを相対パスに変換します。",h=40)
     cmds.button(label="実行",h=50,command=lambda *args:convert_textures_to_relative())
     cmds.showWindow(window)
-    
-    
 
-    
 
-    
 
 
 
