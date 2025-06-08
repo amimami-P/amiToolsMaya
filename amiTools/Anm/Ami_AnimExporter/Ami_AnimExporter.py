@@ -6,7 +6,10 @@ import maya.cmds as cmds
 import maya.mel as mel
 import os
 import subprocess
-import amiToolsLauncher
+try:#amiToolsを導入しない場合のError回避
+    import amiToolsLauncher
+except:
+    pass
 #----------------------------------------------------------
 
 def delete_nameSpace(file_path):
