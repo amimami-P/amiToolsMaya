@@ -5,4 +5,4 @@ amimami作成のMayaツールリポジトリです
 
 ## 導入方法
 amiToolsInstaller.py をMayaのビューポートにドラック＆ドロップすればツールシェルフが作成されます
-![](amiTools\Image\amiTools導入方法.png)
+![](amiTools/Image/amiTools導入方法.png)
