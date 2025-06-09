@@ -164,3 +164,6 @@ def Ami_AnimExporter():
     cmds.setParent("..")
     cmds.showWindow(window)
     cmds.setFocus("")
+    
+if __name__ == '__main__':
+    Ami_AnimExporter()
