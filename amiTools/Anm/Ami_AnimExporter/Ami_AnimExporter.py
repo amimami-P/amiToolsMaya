@@ -52,7 +52,7 @@ def Anim_FBX_Export():
     rootPath = scenePath.split("/")[:-1]
     rootPath += ["motion_FBX"]
     rootPath  = "/".join(rootPath)
-    export_Path = rootPath + "/" + sceneName.replace(sceneName.split(".")[-1],".fbx")
+    export_Path = rootPath + "/" + sceneName.replace(sceneName.split(".")[-1],"fbx")
     exportRoot = cmds.textField("AAEEexportRoot", query=True, text=True)
     if not exportRoot:
         cmds.inViewMessage(
