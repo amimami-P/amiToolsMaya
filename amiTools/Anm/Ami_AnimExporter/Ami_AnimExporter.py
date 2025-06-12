@@ -52,7 +52,7 @@ def Anim_FBX_Export():
     rootPath = scenePath.split("/")[:-1]
     rootPath += ["motion_FBX"]
     rootPath  = "/".join(rootPath)
-    export_Path = rootPath + "/" + sceneName.replace(".ma",".fbx")
+    export_Path = rootPath + "/" + sceneName.replace(sceneName.split(".")[-1],".fbx")
     exportRoot = cmds.textField("AAEEexportRoot", query=True, text=True)
     if not exportRoot:
         cmds.inViewMessage(
@@ -92,7 +92,7 @@ def Anim_FBX_Export():
         "FBXExportDeleteOriginalTakeOnSplitAnimation -q;")
     in_ascii = mel.eval("FBXExportInAscii -q;")
     if cmds.checkBox("AAEdeleteNameSpace", query=True, value=True) ==True:
-        delete_nameSpace(export_Path)
+        delete_nameSpace(export_Path.replace("/", "\\"))
     if cmds.checkBox("AAEopenExportFolder", query=True, value=True) ==True:
         openPath = rootPath.replace("/", "\\")
         subprocess.Popen(f'explorer {openPath}')
