@@ -47,7 +47,7 @@ import sys
 if not r'{0}' in sys.path:
     sys.path.append(r'{0}')
 
-import amiTools.amiToolsLauncher as amiToolsLauncher
+import amiToolsLauncher
 importlib.reload(amiToolsLauncher)
 amiToolsLauncher.amiToolsLauncher()
 
