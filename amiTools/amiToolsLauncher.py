@@ -15,7 +15,10 @@ Ver　1.0
 #----------------------------------------------------------
 import os
 import maya.cmds as cmds
+import sys
 
+
+sys.dont_write_bytecode = True
 def amiTL_show_help():
     if cmds.window("helpWindow", exists=True):
         cmds.deleteUI("helpWindow")

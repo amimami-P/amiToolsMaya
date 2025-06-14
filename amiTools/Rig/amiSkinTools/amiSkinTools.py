@@ -55,7 +55,7 @@ def amiSkinTools():
                 columnWidth=[(1, 100), (2, 170)])
 
     image_path = my_path.split("amiTools\\")[0]
-    cmds.symbolButton(image=image_path + r"\Image\amiIcon.png", w=30, h=30,
+    cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
                         command=lambda *args:amiToolsLauncher.amiToolsLauncher())
     cmds.text(label="ami Skin Tools", height=30, font="boldLabelFont")
     cmds.button(label="?", width=30, height=30, command=lambda *_: amiTL_show_help())
