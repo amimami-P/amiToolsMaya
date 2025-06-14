@@ -51,7 +51,8 @@ def amiToolsLauncher():
     folder_list = [file for file in os.listdir(my_path) if not "." in file]
     if "Image" in folder_list:
         folder_list.remove("Image")
-
+    if "__pycache__" in folder_list:
+        folder_list.remove("__pycache__")
     if cmds.workspaceControl("amiToolsLauncher", exists=True):
         cmds.deleteUI("amiToolsLauncher", control=True)
 
@@ -82,7 +83,7 @@ def amiToolsLauncher():
     bgc_list = [[0.4, 0.1, 0.1], [0.1, 0.4, 0.1], [0.1, 0.1, 0.4],
                 [0.4, 0.4, 0.1], [0.1, 0.4, 0.4], [0.4, 0.1, 0.4]]
 
-
+    
     scroll = cmds.scrollLayout("amiToolsLauncherScroll", childResizable=True, parent=form)
     scroll_content = cmds.columnLayout("amiToolsLauncherColumn", adjustableColumn=True, parent=scroll)
 
