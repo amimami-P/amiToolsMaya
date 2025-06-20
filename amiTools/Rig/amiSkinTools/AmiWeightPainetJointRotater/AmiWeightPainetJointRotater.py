@@ -14,17 +14,23 @@ def AmiWPJR_Targetset():
 def AmiWPJR_RotX(val,):
     AmiWPJR_Targetset()
     jnt = cmds.textField("AmiWPJR_Target", text=True,query=True, )
+    cmds.undoInfo(stateWithoutFlush=False) 
     cmds.setAttr(f"{jnt}.rx",val)
+    cmds.undoInfo(stateWithoutFlush=True)  
 
 def AmiWPJR_RotY(val,):
     AmiWPJR_Targetset()
     jnt = cmds.textField("AmiWPJR_Target", text=True,query=True, )
+    cmds.undoInfo(stateWithoutFlush=False) 
     cmds.setAttr(f"{jnt}.ry",val)
+    cmds.undoInfo(stateWithoutFlush=True)  
 
 def AmiWPJR_RotZ(val,):
     AmiWPJR_Targetset()
     jnt = cmds.textField("AmiWPJR_Target", text=True,query=True, )
+    cmds.undoInfo(stateWithoutFlush=False) 
     cmds.setAttr(f"{jnt}.rz",val)
+    cmds.undoInfo(stateWithoutFlush=True)  
 
 def AmiWPJR_RotReset():
     try:
