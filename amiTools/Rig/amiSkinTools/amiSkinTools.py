@@ -69,6 +69,7 @@ def amiSkinTools():
     for folder in enumerate(folder_list):
         command_test = f"""import Rig.amiSkinTools.{folder[1]}.{folder[1]} as {folder[1]}\n
 from importlib import reload\nreload({folder[1]})\n{folder[1]}.{folder[1]}()"""
+        print(command_test)
         cmds.button(label=folder[1], command=command_test, parent=scroll)
         cmds.separator(height=5, parent=scroll)
     cmds.setParent("..")

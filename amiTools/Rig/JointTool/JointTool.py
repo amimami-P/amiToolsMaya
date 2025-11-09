@@ -7,6 +7,7 @@ amimamiがJoint系のセットアップをするときに使うスクリプト�
 #----------------------------------------------------------
 import os
 import maya.cmds as cmds
+import maya.mel as mel
 import amiToolsLauncher
 #---------------------------------------------------
 def set_display_and_outliner_color(node, rgb):
@@ -178,6 +179,13 @@ def RotateFreezeRun():
 
     cmds.undoInfo(closeChunk=True)
 
+def orientJoint():
+    setJoint = cmds.ls(sl=True)[0]
+    parentNodes = cmds.listRelatives(setJoint, parent=True)
+    cmds.parent(setJoint,world=True)
+    mel.eval('joint -e  -oj xyz -secondaryAxisOrient yup -ch -zso;')
+    cmds.parent(setJoint,parentNodes[0])
+
 def JointTool():
     if cmds.window("jointTool", exists=True):
         cmds.deleteUI("jointTool")
@@ -200,6 +208,8 @@ def JointTool():
     cmds.button(label="Create joint()", height=30, command=lambda *args: cmds.joint())
     cmds.button(label="Rotate Freeze", height=30, command=lambda *args: RotateFreezeRun())
     cmds.button(label="Reset Joint Orient", command=lambda *args: reset_joint_orient())
+    cmds.button(label="orient Joint", command=lambda *args: orientJoint())
+    
     cmds.setParent("..")  # frameLayout 終了
     cmds.setParent("..")
     # --- セクション: 表示切替

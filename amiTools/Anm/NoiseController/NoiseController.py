@@ -244,3 +244,4 @@ def NoiseController():
         else:
             count = count + 1
 
+NoiseController()
