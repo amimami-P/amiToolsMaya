@@ -42,7 +42,7 @@ def AttrSeter():
     if cmds.window("AttrSeter", exists=True):
         cmds.deleteUI("AttrSeter")
 
-    window = cmds.window("AttrSeter", title="AttrSeter", widthHeight=(400, 120),
+    window = cmds.window("AttrSeter", title="AttrSeter",
         sizeable=False, maximizeButton=False, minimizeButton=False)
 
     cmds.columnLayout("AttrSeterColumn", adjustableColumn=True)

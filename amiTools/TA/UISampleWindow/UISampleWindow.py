@@ -297,8 +297,10 @@ tabLayout -edit -tabLabel ("レイアウト名" "タブのラベル") myTab;''',
     add_ui_with_buttons(lambda: cmds.button(label="ボタン", h=30, w=50,ann="annフラグで簡単な説明メッセージ表示ができます"),
                         "Button",
                         """cmds.button("myButton", label="ボタン")
-ボタンを押したと時のアクション
-    command=lambda *args:function()H
+**********************************
+ボタンを押したと時のアクション↓
+**********************************
+    command=lambda *args:function()
 
 右クリックでポップアップメニューを出す
 cmds.popupMenu(parent="myButton")# ボタンを指定してparent

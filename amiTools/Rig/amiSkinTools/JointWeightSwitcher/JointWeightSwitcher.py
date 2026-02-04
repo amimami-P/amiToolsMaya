@@ -84,7 +84,7 @@ def update_color_ramp(*args):
 def JointWeightSwitcher():
     if cmds.window("JointWeightSwitcher", exists=True):
         cmds.deleteUI("JointWeightSwitcher")
-    window = cmds.window("JointWeightSwitcher", title="Joint Weight Switcher", widthHeight=(400, 350), sizeable=False)
+    window = cmds.window("JointWeightSwitcher", title="Joint Weight Switcher",sizeable=False)
     main_layout = cmds.columnLayout(adjustableColumn=True, rowSpacing=10)
     # ---------- Target Mesh ----------
     cmds.frameLayout(label="Target Mesh", collapsable=False, marginWidth=10, marginHeight=5)

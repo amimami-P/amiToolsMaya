@@ -76,7 +76,7 @@ def JointExporter():
     if cmds.window("JointExporter", exists=True):
         cmds.deleteUI("JointExporter", window=True)
 
-    window = cmds.window("Joint Exporter", title="Joint Exporter",  widthHeight=(210, 185),
+    window = cmds.window("Joint Exporter", title="Joint Exporter",
                                 sizeable=False,maximizeButton=False, minimizeButton=False,)
     cmds.columnLayout(adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 35),])

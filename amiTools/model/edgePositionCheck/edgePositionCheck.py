@@ -66,7 +66,7 @@ def edgePositionCheck():
     if cmds.window("edgePositionCheck", exists=True):
         cmds.deleteUI("edgePositionCheck")
 
-    window = cmds.window("edgePositionCheck", title="エッジ位置チェック", widthHeight=(300, 150))
+    window = cmds.window("edgePositionCheck", title="エッジ位置チェック",)
     cmds.columnLayout(adjustableColumn=True)
 
     cmds.text(label="誤差率を調整（小さいほど厳密）")

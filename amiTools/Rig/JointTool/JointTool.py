@@ -81,7 +81,6 @@ def toggle_joint_display(show=True):
     for joint in selected_joints:
         cmds.setAttr(joint + ".displayLocalAxis", show)
 
-
 def create_joint_at_vertex():
     selected_vertices = cmds.ls(selection=True, flatten=True)
     cmds.select(clear=True)
@@ -96,7 +95,6 @@ def create_joint_at_vertex():
         cmds.setAttr(joint + ".overrideColor", 20)  # ピンク
         cmds.select(clear=True)
     print("Joint(s) created at selected vertex position(s).")
-
 
 def reset_joint_orient():
     selected_joints = cmds.ls(selection=True, type="joint")
@@ -118,7 +116,6 @@ def toggle_joint_display(show):
     for joint in selected_joints:
         cmds.setAttr(joint + ".displayLocalAxis", show)
 
-
 def set_name_chain_joint():
     sel = cmds.ls(sl=True)
     setname = sel[0]
@@ -126,7 +123,6 @@ def set_name_chain_joint():
         if not index == 0:
             num = index + 1
             cmds.rename(i,setname.replace("01","0" + str(num)))
-
 
 def CreateLocater():
     sel = cmds.ls(sl=True)
@@ -154,7 +150,6 @@ def ResetBindPose():
     cmds.select(None)
     print("Reset Successfully!!!"),
 
-
 def ShowCBJointOrient(Show):
 
     for jnt in cmds.ls(type="joint"):
@@ -163,7 +158,6 @@ def ShowCBJointOrient(Show):
                 cmds.setAttr(f"{jnt}.jointOrient{axis}", keyable=False, channelBox=True)
             else:
                 cmds.setAttr(f"{jnt}.jointOrient{axis}", keyable=False, channelBox=False)
-
 
 def RotateFreezeRun():
     cmds.undoInfo(openChunk=True)
@@ -186,11 +180,12 @@ def orientJoint():
     mel.eval('joint -e  -oj xyz -secondaryAxisOrient yup -ch -zso;')
     cmds.parent(setJoint,parentNodes[0])
 
+
 def JointTool():
     if cmds.window("jointTool", exists=True):
         cmds.deleteUI("jointTool")
 
-    window = cmds.window("jointTool", title="Joint Tool", widthHeight=(280, 550), sizeable=False)
+    window = cmds.window("jointTool", title="Joint Tool",)
 
     cmds.columnLayout(adjustableColumn=True, rowSpacing=10)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 82),])

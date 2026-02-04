@@ -4,27 +4,32 @@ def AmiWPJR_Targetset():
     if cmds.radioButtonGrp("miWPJR_Radio", query=True, select=True) == 2:
         return
     ctx = cmds.currentCtx()
-    if cmds.contextInfo(ctx, query=True, title=True) == "Paint Skin Weights Tool":
-
+    if cmds.contextInfo(ctx, q=True, title=True) == "Paint Skin Weights Tool" \
+            or cmds.contextInfo(ctx, q=True, c=True) == "artAttrSkin":
         # 現在ペイント中のジョイント（インフルエンス）を取得
         edit_influence = cmds.artAttrSkinPaintCtx(ctx, query=True, influence=True)
         cmds.textField("AmiWPJR_Target", text=edit_influence,edit=True )
-            
 
 def AmiWPJR_RotX(val,):
     AmiWPJR_Targetset()
+    cmds.undoInfo(stateWithoutFlush=False)
     jnt = cmds.textField("AmiWPJR_Target", text=True,query=True, )
     cmds.setAttr(f"{jnt}.rx",val)
+    cmds.undoInfo(stateWithoutFlush=True)
 
 def AmiWPJR_RotY(val,):
     AmiWPJR_Targetset()
+    cmds.undoInfo(stateWithoutFlush=False)
     jnt = cmds.textField("AmiWPJR_Target", text=True,query=True, )
     cmds.setAttr(f"{jnt}.ry",val)
+    cmds.undoInfo(stateWithoutFlush=True)
 
 def AmiWPJR_RotZ(val,):
     AmiWPJR_Targetset()
+    cmds.undoInfo(stateWithoutFlush=False)
     jnt = cmds.textField("AmiWPJR_Target", text=True,query=True, )
     cmds.setAttr(f"{jnt}.rz",val)
+    cmds.undoInfo(stateWithoutFlush=True)
 
 def AmiWPJR_RotReset():
     try:
@@ -41,7 +46,8 @@ def AmiWeightPainetJointRotater():
     if cmds.window("AmiWeightPainetJointRotater", exists=True):
         cmds.deleteUI("AmiWeightPainetJointRotater")
     ctx = cmds.currentCtx()
-    if cmds.contextInfo(ctx, query=True, title=True) == "Paint Skin Weights Tool":
+    if cmds.contextInfo(ctx, q=True, title=True) == "Paint Skin Weights Tool" \
+            or cmds.contextInfo(ctx, q=True, c=True) == "artAttrSkin":
         if cmds.workspaceControl("AmiWeightPainetJointRotater", exists=True):
             cmds.deleteUI("AmiWeightPainetJointRotater", control=True)
 
@@ -57,7 +63,7 @@ def AmiWeightPainetJointRotater():
         cmds.columnLayout(adjustableColumn=True)
 
         cmds.text(label="WeightPainetJointRotater" )
-        
+
         cmds.separator(height=5)
         cmds.radioButtonGrp("miWPJR_Radio",
                             numberOfRadioButtons=2, labelArray2=["Auto", "Lock", ], select=1)
@@ -77,7 +83,8 @@ def AmiWeightPainetJointRotater():
             max=180,
             value=0,
             step=0.1,
-            dragCommand=AmiWPJR_RotX
+            dragCommand=AmiWPJR_RotX,
+            changeCommand=AmiWPJR_RotX
         )
         cmds.separator(height=5)
         cmds.text(label="RotateY")
@@ -88,7 +95,8 @@ def AmiWeightPainetJointRotater():
             max=180,
             value=0,
             step=0.1,
-            dragCommand=AmiWPJR_RotY
+            dragCommand=AmiWPJR_RotY,
+            changeCommand=AmiWPJR_RotY,
         )
         cmds.separator(height=5)
         cmds.text(label="RotateZ")
@@ -99,7 +107,8 @@ def AmiWeightPainetJointRotater():
             max=180,
             value=0,
             step=0.1,
-            dragCommand=AmiWPJR_RotZ
+            dragCommand=AmiWPJR_RotZ,
+            changeCommand=AmiWPJR_RotZ
         )
         cmds.separator(height=20)
         cmds.button("myButton", label="Reset",h=30,command=lambda *args:AmiWPJR_RotReset())

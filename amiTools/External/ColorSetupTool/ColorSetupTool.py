@@ -25,7 +25,7 @@ def ColorSetupTool():
     if cmds.window("ColorSetupTool", exists=True):
         cmds.deleteUI("ColorSetupTool")
 
-    window = cmds.window("ColorSetupTool", title="ColorSetupTool",widthHeight=(210, 170),
+    window = cmds.window("ColorSetupTool", title="ColorSetupTool",
                                 sizeable=False,maximizeButton=False, minimizeButton=False,)
     cmds.columnLayout(adjustableColumn=True, rowSpacing=8)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 40),])

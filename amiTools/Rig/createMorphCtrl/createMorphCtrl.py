@@ -32,7 +32,7 @@ def get_blendshape_targets(blendshape_node):
 
 def createMorphCtrl():
     sel = cmds.ls(sl=True)[0]
-    ctrlName = sel.split(":")[0] + "_MorphCtrl"
+    ctrlName = sel.split(":")[-1] + "_MorphCtrl"
     cmds.curve(name=ctrlName,d=1,
         p=[(0.0, 0.0, -2.993802), (-0.886951, 0.0, -0.993802),
             (-3.0, 0.0, -0.993802), (-1.271527, 0.0, 0.388976),

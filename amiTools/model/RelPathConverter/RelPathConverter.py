@@ -83,7 +83,7 @@ def RelPathConverter():
     if cmds.window("RelPathConverter", exists=True):
         cmds.deleteUI("RelPathConverter")
 
-    window = cmds.window("RelPathConverter", title="RelPathConverter", widthHeight=(250, 125),
+    window = cmds.window("RelPathConverter", title="RelPathConverter",
                          sizeable=False,maximizeButton=False, minimizeButton=False,)
     cmds.columnLayout(adjustableColumn=True)
     cmds.columnLayout("RelPathConverterMainColumn", adjustableColumn=True)

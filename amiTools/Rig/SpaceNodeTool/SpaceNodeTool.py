@@ -42,7 +42,7 @@ def insert_spaceNode(transform=False, joint=False):
 def SpaceNodeTool():
     if cmds.window("SpaceNodeTool", exists=True):
         cmds.deleteUI("SpaceNodeTool")
-    window = cmds.window("SpaceNodeTool", title="SpaceNodeTool", widthHeight=(204, 145),
+    window = cmds.window("SpaceNodeTool", title="SpaceNodeTool",
                                 sizeable=False,maximizeButton=False, minimizeButton=False,)
     cmds.columnLayout(adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 30),])

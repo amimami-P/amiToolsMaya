@@ -7,7 +7,10 @@
 #----------------------------------------------------------
 import os
 import maya.cmds as cmds
-import amiToolsLauncher
+try:
+    import amiToolsLauncher
+except:
+    pass
 
 def setLabel(AllJoint=True):
     jointList = cmds.ls(sl=True,type="joint")
@@ -44,16 +47,19 @@ def ToggleLabel(AllJoint=True):
 def SetLabelTool():
     if cmds.window("SetLabelTool", exists=True):
         cmds.deleteUI("SetLabelTool")
-    window = cmds.window("SetLabelTool", title="SetLabelTool", widthHeight=(320, 200),
+    window = cmds.window("SetLabelTool", title="SetLabelTool",
                                 sizeable=False,maximizeButton=False, minimizeButton=False,)
     cmds.columnLayout("SetLabelToolMainColumn", adjustableColumn=True)
     cmds.rowLayout(numberOfColumns=3,columnAttach=[(2, "both", 102),])
-    my_path =os.path.dirname(os.path.abspath(__file__))
-    image_path = my_path.split("amiTools\\")[0]
-    cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
-                        command=lambda *args:amiToolsLauncher.amiToolsLauncher())
-    cmds.text(label="Set Label",h=30, font="boldLabelFont")
-    cmds.button(label="?", width=30, height=30, command=lambda *_:print("help"))
+    try:
+        my_path =os.path.dirname(os.path.abspath(__file__))
+        image_path = my_path.split("amiTools\\")[0]
+        cmds.symbolButton(image=image_path + r"\amiTools\Image\amiIcon.png", w=30,h=30,
+                            command=lambda *args:amiToolsLauncher.amiToolsLauncher())
+        cmds.text(label="Set Label",h=30, font="boldLabelFont")
+        cmds.button(label="?", width=30, height=30, command=lambda *_:print("help"))
+    except:
+        pass
     cmds.setParent("..")
     cmds.separator( height=10)
     cmds.text(label="左右の識別子を入力")
